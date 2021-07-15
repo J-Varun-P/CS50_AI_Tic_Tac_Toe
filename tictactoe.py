@@ -3,6 +3,7 @@ Tic Tac Toe Player
 """
 
 import math
+import copy
 
 X = "X"
 O = "O"
@@ -65,9 +66,10 @@ def result(board, action):
     print("----")
     print(action)
     print("----")
-    board[action[0]][action[1]] = whose_turn
+    board_temp = copy.deepcopy(board)
+    board_temp[action[0]][action[1]] = whose_turn
     print("----")
-    return board
+    return board_temp
     #raise NotImplementedError
 
 
@@ -154,18 +156,37 @@ def minimax(board):
     whose_turn = player(board)
     if whose_turn == "X":
         v = -100
-        if terminal(board):
-            return utility(board)
         a = actions(board)
         for action in a:
-            v = max(v,minimax(result(board,action)))
-        return v
+            v_temp = min_value(result(board,action))
+            if v_temp > v:
+                v = v_temp
+                action_temp = action
     elif whose_turn == "O":
         v = 100
-        if terminal(board):
-            return utility(board)
         a = actions(board)
         for action in a:
-            v = min(v,minimax(result(board,action)))
-        return v
+            v_temp = max_value(result(board,action))
+            if v_temp < v:
+                v = v_temp
+                action_temp = action
+    return action_temp
     #raise NotImplementedError
+
+def max_value(board):
+    if terminal(board):
+        return utility(board)
+    v = -100
+    a = actions(board)
+    for action in a:
+        v = max(v,min_value(result(board,action)))
+    return v
+
+def min_value(board):
+    if terminal(board):
+        return utility(board)
+    v = 100
+    a = actions(board)
+    for action in a:
+        v = min(v,max_value(result(board,action)))
+    return v
