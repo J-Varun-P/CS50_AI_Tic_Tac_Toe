@@ -23,6 +23,9 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
+    # Any return value is acceptable if a terminal board is provided as input (i.e., the game is already over)
+    if terminal(board):
+        return X
     x_turn = 0
     o_turn = 0
     for i in board:
@@ -31,8 +34,6 @@ def player(board):
                 x_turn += 1
             elif j == "O":
                 o_turn += 1
-    if terminal(board):
-        return X
     if x_turn > o_turn:
         return O
     else:
@@ -44,6 +45,7 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
+    # Any return value is acceptable if a terminal board is provided as input
     if terminal(board):
         return (1,1)
     actions = set()
@@ -146,6 +148,8 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
+    if terminal(board):
+        return None
     whose_turn = player(board)
     if whose_turn == "X":
         v = -100
