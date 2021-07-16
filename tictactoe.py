@@ -23,7 +23,6 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    print(len(board))
     x_turn = 0
     o_turn = 0
     for i in board:
@@ -47,13 +46,11 @@ def actions(board):
     """
     if terminal(board):
         return (1,1)
-    print("In actions")
     actions = set()
     for i in range(3):
         for j in range(3):
             if board[i][j] == None:
                 actions.add((i,j))
-                print(i,j)
     return actions
     #raise NotImplementedError
 
@@ -63,12 +60,8 @@ def result(board, action):
     Returns the board that results from making move (i, j) on the board.
     """
     whose_turn = player(board)
-    print("----")
-    print(action)
-    print("----")
     board_temp = copy.deepcopy(board)
     board_temp[action[0]][action[1]] = whose_turn
-    print("----")
     return board_temp
     #raise NotImplementedError
 
@@ -158,7 +151,7 @@ def minimax(board):
         v = -100
         a = actions(board)
         for action in a:
-            v_temp = min_value(result(board,action))
+            v_temp = min_value(result(board,action), -100, 100)
             if v_temp > v:
                 v = v_temp
                 action_temp = action
@@ -166,27 +159,33 @@ def minimax(board):
         v = 100
         a = actions(board)
         for action in a:
-            v_temp = max_value(result(board,action))
+            v_temp = max_value(result(board,action), -100, 100)
             if v_temp < v:
                 v = v_temp
                 action_temp = action
     return action_temp
     #raise NotImplementedError
 
-def max_value(board):
+def max_value(board, alpha, beta):
     if terminal(board):
         return utility(board)
     v = -100
     a = actions(board)
     for action in a:
-        v = max(v,min_value(result(board,action)))
+        v = max(v,min_value(result(board,action), alpha, beta))
+        if v >= beta:
+            break
+        alpha = max(alpha, v)
     return v
 
-def min_value(board):
+def min_value(board, alpha, beta):
     if terminal(board):
         return utility(board)
     v = 100
     a = actions(board)
     for action in a:
-        v = min(v,max_value(result(board,action)))
+        v = min(v,max_value(result(board,action), alpha, beta))
+        if v <= alpha:
+            break
+        beta = min(beta, v)
     return v
