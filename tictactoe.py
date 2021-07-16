@@ -152,6 +152,7 @@ def minimax(board):
         a = actions(board)
         for action in a:
             v_temp = min_value(result(board,action), -100, 100)
+            #print(v_temp, action)
             if v_temp > v:
                 v = v_temp
                 action_temp = action
@@ -160,9 +161,11 @@ def minimax(board):
         a = actions(board)
         for action in a:
             v_temp = max_value(result(board,action), -100, 100)
+            #print(v_temp, action)
             if v_temp < v:
                 v = v_temp
                 action_temp = action
+    #print("\n")
     return action_temp
     #raise NotImplementedError
 
